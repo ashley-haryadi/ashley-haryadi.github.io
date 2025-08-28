@@ -2,48 +2,58 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1" style="margin:20px;">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <title>User page</title>
         <style>
-            
-            .overlay {
+            .overlay, .overlayCard{
                 left: 0px;
                 right: 0px;
-                top: 0px;
+                top: 56px;
                 bottom: 0px;
                 display: none;
                 position: fixed;
-
+                width: 100%;
+                height: 100%;
+                overflow-y: scroll;
             }
+            
             .display{
                 border: none;
                 outline: none;
                 background-color: skyblue;
             }
+            
             .navigation{
                 text-decoration: none;
                 overflow: auto;
                 background-color: skyblue;
                 border-radius: 10px;
             }
+            
             .navigation a{
             	float: left;
                 font-size: 17px;
                 color: white;
                 padding: 10px;
                 font-size: 17px;
+                cursor: pointer;
             }
+            
             .navigation a:hover {
                 background-color: mediumOrchid;
             }
+            
             .active {
                 background-color:DarkSlateBlue; 
             }
-            .formscreen {
+            
+            .formScreen {
                 display: none;
                 position: absolute;
                 text-decoration-color: black;
                 padding: 10px;
             }
+            
             #snackbar{
                 background-color: skyblue;
                 position: fixed;
@@ -81,6 +91,7 @@
                 'main main main main main main'
                 'main main main main main main';
             }
+            
             @media screen and (min-width: 750px){
                 #cardClassOne{grid-area: 1/1;}
                 #cardClassTwo{grid-area: 1/2;}
@@ -120,26 +131,14 @@
                 #cardClassFour{grid-area: 4/6;}
                 #cardClassFive{grid-area: 5/6;}
                 #cardClassSix{grid-area: 6/6;}
-                
             }
             
             /*....................................................................*/
-            .overlayCard{
-                left: 0px;
-                right: 0px;
-                top: 0px;
-                bottom: 0px;
-                display: none;
-                width: 100%;
-                height: 100%;
-                position: fixed;
-                overflow-y: scroll;
-            }
             
             .largeCovers{
-                position: relative;
                 grid-area: card;
                 margin-left: 40px;
+                position: relative;
                 
             }
             
@@ -150,8 +149,8 @@
             
             .overlayText{
                 grid-area: card;
-                position: relative;
                 color: black;
+                position: relative;
             }
             
             /*....................................................................*/
@@ -171,10 +170,44 @@
                 padding: 5px;
                 color: skyblue;
                 font-size: 30px;
+                cursor: pointer;
             }
             
             .prev:hover .next:hover{
                 background-color: rgba(50,50,50,0.2);
+            }
+            .star{
+                font-size: 25px;
+                color: orange;
+                position: relative;
+            }
+            
+            #infoButton{
+                visibility: hidden;
+            }
+            
+            .colapseButton{
+                background-color: dimGrey;
+                cursor: pointer;
+                padding: 10px;
+            }
+            .colapseableText{
+                background-color: grey;
+                padding: 5px;
+                display: none;
+            }
+            
+            .colapseButton, .colapseableText{
+                border: none;
+                color: white;
+                text-align:left;
+                width:100%;
+                outline: none;
+                position: relative;
+            }
+            .hyperlink{
+                color: mediumBlue;
+                text-decoration: underline;
             }
             
         </style>
@@ -184,17 +217,25 @@
             var inputName = "";
             var displayVar = "";
             var save ="";
-            function cardChange(me){
-                document.getElementById("cardClassOne").style.display = me;
-                document.getElementById("cardClassTwo").style.display = me;
-                document.getElementById("cardClassThree").style.display = me;
-                document.getElementById("cardClassFour").style.display = me;
-                document.getElementById("cardClassFive").style.display = me;
-                document.getElementById("cardClassSix").style.display = me;
+            
+            function cardChange(display){
+                let slidesType = document.getElementsByClassName("card");
+                  for (i = 0; i < slidesType.length; i++) {
+                    slidesType[i].style.display = display;
+                }
                 
-                document.getElementById("welcomeText").style.display = me;
+                document.getElementById("welcomeText").style.display = display;
             }
             
+            function overlayHide(){
+                let slidesHide = document.getElementsByClassName("largeCard");
+                for (i = 0; i < slidesHide.length; i++) {
+                    slidesHide[i].style.display = "none";
+                  }
+                document.getElementById("infoButton").style.visibility = "hidden";
+                document.getElementById("prevButton").style.display = "none";
+                document.getElementById("nextButton").style.display = "none";
+            }
             let slideIndex = 1;
             showSlides(slideIndex);
             
@@ -205,12 +246,10 @@
             function showSlides(n) {
               let i;
               let slides = document.getElementsByClassName("largeCard");
-            //   alert(slides);
               if (n > slides.length) {slideIndex = 1}
               if (n < 1) {slideIndex = slides.length}
               for (i = 0; i < slides.length; i++) {
                 slides[i].style.display = "none";
-                // alert(slides.length);
               }
               slides[slideIndex-1].style.display = "block";
             }
@@ -219,22 +258,22 @@
             function on() {
                 document.getElementById("overlay").style.display="block";
                 document.getElementById("formScreen").style.display="block";
-                
+                overlayHide();
                 cardChange("none");
                 document.getElementById("homeButton").className = "display";
                 document.getElementById("formButton").className = "active";
+                document.getElementById("cardOverlay").style.display = "none";
+                document.getElementById("infoButton").style.visibility = "hidden";
                 
                 
             }
             function off() {
                 document.getElementById("overlay").style.display= "none";
                 document.getElementById("formScreen").style.display="none";
-                
-                cardChange("block");
-                
                 document.getElementById("homeButton").className = "active";
                 document.getElementById("formButton").className = "display";
-                
+                cardChange("block");
+                overlayHide();
             }
             
             function submit(){
@@ -258,7 +297,7 @@
                 displayVar=document.getElementById("snackbar").style.display="block";
                 setTimeout(function() {document.getElementById("snackbar").style.display="none"}, 3000);
             }
-            // // ....................................................................
+            //....................................................................
             
             function toggleCard(name){
                 buttonText = document.getElementById(name);
@@ -271,6 +310,18 @@
                 }
             }
             
+            function compactButton(info,name){
+                buttonText = document.getElementById(info);
+                
+                if(buttonText.innerHTML == "More info🠳"){
+                    buttonText.innerHTML= "Less info🠱";
+                    document.getElementById(name).style.display = "block";
+                }
+                else{
+                    buttonText.innerHTML= "More info🠳";
+                    document.getElementById(name).style.display = "none";
+                }
+            }
             // ....................................................................
             
             function overlayCard(bookCover){
@@ -278,37 +329,35 @@
                 document.getElementById(bookCover+"LargeCard").style.display = "block";
                 document.getElementById("prevButton").style.display = "block";
                 document.getElementById("nextButton").style.display = "block";
+                
+                document.getElementById("infoButton").style.visibility = "visible";
+                document.getElementById("formButton").className = "display";
+                document.getElementById("homeButton").className = "display";
+                
+                document.getElementById("formScreen").style.display = "none";
                 cardChange("none");
                 save = bookCover+"LargeCard";
             }
             
             function offOverlayCard(){
                 document.getElementById("cardOverlay").style.display = "none";
-                document.getElementById(save).style.display = "none";
-                document.getElementById("prevButton").style.display = "none";
-                document.getElementById("nextButton").style.display = "none";
+                document.getElementById("infoButton").style.visibility = "hidden";
                 cardChange("block");
-                
-                document.getElementById("FridayBarnesLargeCard").style.display = "none";
-                document.getElementById("MurderMostUnladylikeLargeCard").style.display = "none";
-                document.getElementById("ScarletAndIvyLargeCard").style.display = "none";
-                document.getElementById("WingsOfFireSundewLargeCard").style.display = "none";
-                document.getElementById("HollowpoxLargeCard").style.display = "none";
-                document.getElementById("AliceInWonderlandLargeCard").style.display = "none";
-                
+                overlayHide();
+                document.getElementById("homeButton").className = "active";
+                document.getElementById("formButton").className = "display";
                 }
             
             // ....................................................................
             
-            // function home(){
-            //     cardChange("block");
+            function home(){
+                cardChange("block");
+                overlayHide();
+                document.getElementById("homeButton").className = "active";
+                document.getElementById("formButton").className = "display";
+                document.getElementById("formScreen").style.display = "none";
                 
-            //     document.getElementById("homeButton").className = "active";
-            //     document.getElementById("formButton").className = "display";
-            //     document.getElementById("formScreen").style.display = "none";
-                
-                
-            // }
+            }
         </script>
         
     </head>
@@ -316,14 +365,14 @@
         <div id="overlay" onclick="off()" class="overlay"></div>
         
         <div class="navigation">
-            <button onclick="home()" class="active" id="homeButton"><a href="#"><i class="fa fa-fw fa-home"></i> home</a></button>
-            <button onclick="on()" class="display" id="formButton"><a href="#"><i class="fa fa-fw fa-profile"></i> profile</a></button>
+            <button onclick="home()" class="active" id="homeButton"><a href="#">home</a></button>
+            <button onclick="on()" class="display" id="formButton"><a href="#"> profile</a></button>
+            <button class="active" id="infoButton"><a href="#">information</a></button>
         </div>
-
-        <H3>By Ashley Haryadi</H3>
+        
         <!--........................................................................-->
         
-        <div id="formScreen" class="formscreen">
+        <div id="formScreen" class="formScreen">
             <label>Name:</label><br>
             <input type="text" id="addedName"><br>
             <label>Phone Number:</label><br>
@@ -343,9 +392,7 @@
                 <img src="FridayBarnesBookCover.png" id="FridayBarnes" style="width: 100%;">
                 
                 <div class="textStyle">
-                    <p>Friday Barnes series, girl dectective</p>
-                    <p>By R.A Spratt</p>
-                    <p>$13.00</p>
+                    <p>Friday Barnes series, girl dectective<br>By R.A Spratt<br><br>$13.00</p>
                     
                     <p><button onclick="overlayCard('FridayBarnes')">More information</button></p>
                     
@@ -361,9 +408,7 @@
                 <img src="MurderMostUnladylikeBookCover.png" id="MurderMostUnladylike" style="width: 100%;">
                 
                 <div class="textStyle">
-                    <p>Murder most unladylike series, first book</p>
-                    <p> By Robin Stevens</p>
-                    <p>$15.00</p>
+                    <p>Murder most unladylike series, first book<br>By Robin Stevens<br><br>$15.00</p>
                     
                     <p><button onclick="overlayCard('MurderMostUnladylike')">More information</button></p>
                     
@@ -413,9 +458,7 @@
                 <img src="HollowpoxBookCover.png" id="Hollowpox" style="width: 100%;">
                 
                 <div class="textStyle">
-                    <p>Nevermoor series, Hollowpox</p>
-                    <p>By Jessica Townsend</p>
-                    <p>$12.00</p>
+                    <p>Nevermoor series, Hollowpox<br>By Jessica Townsend<br>$12.00</p>
                 </div>
                     
                     <p><button onclick="overlayCard('Hollowpox')">More information</button></p>
@@ -430,9 +473,7 @@
                 <img src="AliceInWonderlandBookCover.png" id="AliceInWonderland" style="width: 100%;">
                 
                 <div class="textStyle">
-                    <p>Alice in wonderland</p>
-                    <p>By Lewis Carol</p>
-                    <p>$20.00</p>
+                    <p>Alice in wonderland<br>By Lewis Carol<br><br>$20.00</p>
                 </div>
                 
                 <p><button onclick="overlayCard('AliceInWonderland')">More information</button></p>
@@ -447,37 +488,110 @@
             <img src="FridayBarnesBookCoverLarge.png" class="largeCovers">
             <p class="overlayText" >Friday Barnes <br>RA.Spratt</p>
             <p class="overlayText"> Friday Barnes is a mystery solver in her school Highcrest.</p>
+            <button class="colapseButton" onclick="compactButton('compactButtonFridayBarnes','compactTextFridayBarnes')" id="compactButtonFridayBarnes">More info🠳</button>
+            <div class="colapseableText" id="compactTextFridayBarnes">
+                <p>Friday Barnes, mostly forgotten in her family enrols herself in the most prestiguous school in the country. Friday Barnes wishing to skip highschool has no other choice but to attend highschool. Friday enrolls herself into Highcrest and solves many mysteries there. <a id="FridayBarnesMoreInfoHyperlink" class="hyperlink" href="https://raspratt.com/friday-barnes-2/" target="__blank"> see more</a></p>
+                </div>
+            <br>
+            <div class="userRating">
+                <p>User rating</p>
+                <span class="fa fa-star star"></span>
+                <span class="fa fa-star star"></span>
+                <span class="fa fa-star star"></span>
+                <span class="fa fa-star star"></span>
+                <span class="fa fa-star star" style="color:grey;"></span>
+                
+            </div>
         </div>
         
         <div id="MurderMostUnladylikeLargeCard" class="largeCard">
             <img src="MurderMostUnladylikeBookCoverLarge.png" class="largeCovers">
             <p class="overlayText" >Murder Most Unladylike <br>Robin Stevens</p>
             <p class="overlayText" > There's a murder in the Deepan school for girls and it needs to be solved.</p>
+            <button class="colapseButton" onclick="compactButton('compactButtonMurderMostUnladylike','compactTextMurderMostUnladylike')" id="compactButtonMurderMostUnladylike">More info🠳</button>
+            <div class="colapseableText" id="compactTextMurderMostUnladylike">
+            <p>In Deepan School for girls, Hazel and Daisy find their science teacher dead. The only problem is that they are the only people that know she is dead and nobody believes them. It is now up to them to find who killed her.<a id="FridayBarnesMoreInfoHyperlink" class="hyperlink" href="https://robin-stevens.co.uk/series/murder-most-unladylike/" target="__blank"> see more</a></p>
+            </div>
+            <div class="userRating">
+                <p>User rating</p>
+                <span class="fa fa-star star"></span>
+                <span class="fa fa-star star"></span>
+                <span class="fa fa-star star"></span>
+                <span class="fa fa-star star"></span>
+                <span class="fa fa-star star" style="color:grey;"></span>
+            </div>
         </div>
         
         <div id="ScarletAndIvyLargeCard" class="largeCard">
             <img src="ScarletAndIvyBookCoverLarge.png" class="largeCovers">
             <p class="overlayText">Scarlet and Ivy<br>Sophie Cleverly</p>
             <p class="overlayText">Scarlet, Ivy's twin is missing and Ivy has to pretend to be Scarlet while she finds her.</p>
+            <button class="colapseButton" onclick="compactButton('compactButtonScarletAndIvy','compactTextScarletAndIvy')" id="compactButtonScarletAndIvy">More info🠳</button>
+            <div class="colapseableText" id="compactTextScarletAndIvy">
+            <p>Ivy has failed the school admissions to Rookwood, but her twin sister Scarlet has passed. Until one day, Ivy has been called to Rookwood by Miss Fox. Scarlet has dissapeared. There, Ivy has to pretend to by her twin and find what has happened to her. But not everyone is on her side and Miss Fox is watching her.<a id="FridayBarnesMoreInfoHyperlink" class="hyperlink" href="https://scarletandivy.fandom.com/wiki/Scarlet_and_Ivy_(series)" target="__blank"> see more</a></p>
+            </div>
+            <div class="userRating">
+                <p>User rating</p>
+                <span class="fa fa-star star"></span>
+                <span class="fa fa-star star"></span>
+                <span class="fa fa-star star"></span>
+                <span class="fa fa-star star"></span>
+                <span class="fa fa-star star" style="color:grey;"></span>
+            </div>
         </div>
         
         <div id="WingsOfFireSundewLargeCard" class="largeCard">
             <img src="WingsOfFireSundewBookCoverLarge.png" class="largeCovers">
             <p class="overlayText">The Poison Jungle<br>Tui.t.Sutherland</p>
             <p class="overlayText">In the Poison Jungle a forgotten tribe lives deep inside.</p>
+            <button class="colapseButton" onclick="compactButton('compactButtonWingsOfFireSundew','compactTextWingsOfFireSundew')" id="compactButtonWingsOfFireSundew">More info🠳</button>
+            <div class="colapseableText" id="compactTextWingsOfFireSundew">
+            <p>Deep in the Poison Jungle a forgotten tribe, the leafwings live. Protected by the dangerous plants and animals of the jungle. But, deep withing secrets lay burried. As Blue, Cricket and Sundew make their way deeper into the jungle, Othermind is watching.<a id="FridayBarnesMoreInfoHyperlink" class="hyperlink" href="https://tuibooks.com/wings-of-fire/" target="__blank"> see more</a></p>
+            </div>
+            <div class="userRating">
+                <p>User rating</p>
+                <span class="fa fa-star star"></span>
+                <span class="fa fa-star star"></span>
+                <span class="fa fa-star star"></span>
+                <span class="fa fa-star star"></span>
+                <span class="fa fa-star star" style="color:grey;"></span>
+            </div>
         </div>
         
         <div id="HollowpoxLargeCard" class="largeCard">
             <img src="HollowpoxBookCoverLarge.png" class="largeCovers">
             <p class="overlayText">Hollowpox<br>Jessica Townsend</p>
             <p class="overlayText">A disease takes over the creatures of Nevermoor, and Morigian Crow need to solve it.</p>
-            
+            <button class="colapseButton" onclick="compactButton('compactButtonHollowpox','compactTextHollowpox')" id="compactButtonHollowpox">More info🠳</button>
+            <div class="colapseableText" id="compactTextHollowpox">
+            <p>A mysterious disease known as Hollowpox takes over the Wunanimals at Nevermoor. The diesease takes over the minds of the Wunanimals and makes them go mad.Questions lurk as Morrigian tries to solve it. In the mists of all the chaos, her secret is revealed. But now, Morrigian becomes evermore closer to her goal of learning how to be a wondersmith with the archives of the past teachings. Will she cure the disease or will Nevermoor fall to chaos?<a id="FridayBarnesMoreInfoHyperlink" class="hyperlink"> see more</a><a id="FridayBarnesMoreInfoHyperlink" class="hyperlink" href="https://nevermoor.fandom.com/wiki/Nevermoor_(book_series)" target="__blank"> see more</a></p>
+            </div>
+            <div class="userRating">
+                <p>User rating</p>
+                <span class="fa fa-star star"></span>
+                <span class="fa fa-star star"></span>
+                <span class="fa fa-star star"></span>
+                <span class="fa fa-star star"></span>
+                <span class="fa fa-star star" style="color:grey;"></span>
+            </div>
         </div>
         
         <div id="AliceInWonderlandLargeCard" class="largeCard">
             <img src="AliceInWonderlandBookCoverLarge.png" class="largeCovers">
             <p class="overlayText">Alice In Wonderland<br>Lewis Carol</p>
             <p class="overlayText">In a world of twist and turns in Wonderland</p>
+            <button class="colapseButton" onclick="compactButton('compactButtonAliceInWonderland','compactTextAliceInWonderland')" id="compactButtonAliceInWonderland">More info🠳</button>
+            <div class="colapseableText" id="compactTextAliceInWonderland">
+            <p>Alice lost in Wonderland encounters strange friends. Under the tree in the park, a swift turn of chasing a rabbit leaves her stuck in a strange place known as Wonderland. Withe the help of allies would she be able to find a way out?<a id="FridayBarnesMoreInfoHyperlink" class="hyperlink" href="https://aliceinwonderland.fandom.com/wiki/Alice_in_Wonderland_Wiki" target="__blank"> see more</a></p>
+            </div>
+            <div class="userRating">
+                <p>User rating</p>
+                <span class="fa fa-star star"></span>
+                <span class="fa fa-star star"></span>
+                <span class="fa fa-star star"></span>
+                <span class="fa fa-star star"></span>
+                <span class="fa fa-star star" style="color:grey;"></span>
+            </div>
         </div>
         <!--........................................................................-->
         
@@ -486,6 +600,5 @@
         
         <!--........................................................................-->
         <div id="snackbar">Submitted</div>
-        
     </body>
 </html>
